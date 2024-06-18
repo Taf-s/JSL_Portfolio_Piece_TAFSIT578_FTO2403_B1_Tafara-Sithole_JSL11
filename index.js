@@ -1,5 +1,9 @@
-// TASK: import helper functions from utils
-// TASK: import initialData
+// Importing helper functions from utils
+
+import { getTasks, createNewTask, patchTask, putTask, deleteTask } from "./utils/taskFunctions";
+
+// Immporting initialData
+import { initialData } from "./initialData";
 
 
 /*************************************************************************************************************************************************
@@ -16,25 +20,81 @@ function initializeData() {
   }
 }
 
-// TASK: Get elements from the DOM
+
+// Got elements from the DOM
 const elements = {
+  navSideBar: {
+    sideBarDiv: document.getElementById('side-bar-div'),
+    sideLogo: document.getElementById('side-logo-div'),
+    logo: document.getElementById('logo'),
+    boardsNavLinksDiv: document.getElementById('boards-nav-links-div'),
+    headlineSidePanel: document.getElementById('headline-sidepanel'),
+    iconDark: document.getElementById('icon-dark'),
+    iconLight: document.getElementById('icon-light'),
+    hideSideBarBtn: document.getElementById('hide-side-bar-btn'),
+    showSideBarBtn: document.getElementById('show-side-bar-btn'),
+  },
+
+  header: {
+    headerBoardName: document.getElementById('header-board-name'),
+    dropdownBtn: document.getElementById('dropdownBtn'),
+    dropDownIcon: document.getElementById('dropDownIcon'),
+    logoMobile: document.querySelector('.logo-mobile'),
+    addNewTaskBtn: document.getElementById('add-new-task-btn'),
+    editBoardBtn: document.getElementById('edit-board-btn'),
+    editBoardDiv: document.getElementById('editBoardDiv'),
+    deleteBoardBtn: document.getElementById('deleteBoardBtn')
+  },
+  
+  taskColumns: {
+    todoHeadDiv: document.getElementById('todo-head-div'),
+    todoText: document.getElementById('toDoText'),
+    doingHeadDiv: document.getElementById('doing-head-div'),
+    doingText: document.getElementById('doingText'),
+    doneHeadDiv: document.getElementById('done-head-div'),
+    doneText: document.getElementById('doneText')
+  },
+
+  newTaskModal: {
+    newTaskModalWindow: document.querySelector('new-task-modal-window'),
+    titleInput: document.getElementById('title-input'),
+    descInput: document.getElementById('desc-input'),
+    selectStatus: document.getElementById('select-status'),
+    createTaskBtn: document.getElementById('create-task-btn'),
+    cancelAddTaskBtn: document.getElementById('cancel-add-task-btn')
+  },
+
+  editTaskModal: {
+    editTaskModalWindow: document.querySelector('.edit-task-modal-window'),
+    editTaskForm: document.getElementById('edit-task-form'),
+    editTaskTitleInput: document.getElementById('edit-task-title-input'),
+    editTaskDescInput: document.getElementById('edit-task-desc-input'),
+    editSelectStatus: document.getElementById('edit-select-status'),
+    saveTaskChangesBtn: document.getElementById('save-task-changes-btn'),
+    cancelEditBtn: document.getElementById('cancel-edit-btn'),
+    deleteTaskBtn: document.getElementById('delete-task-btn')
+  }
 
 }
 
-let activeBoard = ""
+let activeBoard = "";
 
-// Extracts unique board names from tasks
-// TASK: FIX BUGS
+// Extracts unique board names from tasks and handles potential errors
 function fetchAndDisplayBoardsAndTasks() {
-  const tasks = getTasks();
-  const boards = [...new Set(tasks.map(task => task.board).filter(Boolean))];
-  displayBoards(boards);
-  if (boards.length > 0) {
-    const localStorageBoard = JSON.parse(localStorage.getItem("activeBoard"))
-    activeBoard = localStorageBoard ? localStorageBoard ;  boards[0]; 
-    elements.headerBoardName.textContent = activeBoard
-    styleActiveBoard(activeBoard)
-    refreshTasksUI();
+  try {
+    const tasks = getTasks();
+    const boards = tasks.map(task => task.board).filter(Boolean).filter(board => board !== null);
+    const uniqueBoards = [...new Set(boards)];
+    displayBoards(uniqueBoards);
+    if (uniqueBoards.length > 0) {
+      const localStorageBoard = JSON.parse(localStorage.getItem("activeBoard"));
+      const activeBoard = localStorageBoard || uniqueBoards[0];
+      elements.headerBoardName.textContent = activeBoard;
+      styleActiveBoard(activeBoard);
+      refreshTasksUI();
+    }
+  } catch (error) {
+    console.error('Error fetching and displaying boards:', error);
   }
 }
 
@@ -47,13 +107,13 @@ function displayBoards(boards) {
     const boardElement = document.createElement("button");
     boardElement.textContent = board;
     boardElement.classList.add("board-btn");
-    boardElement.click()  { 
-      elements.headerBoardName.textContent = board;
+    boardElement.addEventListener ("click",() => { 
+     elements.headerBoardName.textContent = board;
       filterAndDisplayTasksByBoard(board);
       activeBoard = board //assigns active board
       localStorage.setItem("activeBoard", JSON.stringify(activeBoard))
       styleActiveBoard(activeBoard)
-    };
+    });
     boardsContainer.appendChild(boardElement);
   });
 
