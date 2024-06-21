@@ -15,4 +15,12 @@ Importing functions and initial data.
 
 \*Javascript for functionality.
 
-## Loom Video Link
+## Loom Video Links
+
+https://www.loom.com/share/a5594faed52d41889235b17fe8db1b8e?sid=3bfc1fa5-d0d8-442e-bcb2-27d38889e556
+
+https://www.loom.com/share/300c2d3867994bf1a939e24d59ee1225?sid=82ab0f91-f538-4eaf-9fa7-53b1e3f5e420
+
+
+
+
